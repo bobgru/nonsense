@@ -25,3 +25,16 @@ OK. Now I want to add some code:
 
 I'm getting all this from [Markdown](http://en.wikipedia.com/wiki/Markdown).
 Enough for now. Let's commit this and see what happens.
+
+### More
+Above I inserted some code as a block, but it could have been done inline. For instance, I could have said something about `fold` having wide applicability in implementing functions such as `sum = fold (+) 0` or `product = fold (*) 1`.
+
+> Block quotes are supposed to reflow as the window resizes. To demonstrate this I need a long line of text long line of text long line of text long line of text, etc.[See Markdown][http://en.wikipedia.com/wiki/Markdown]
+
+There are various ways to create a horizontal rule. *Wikipedia* says they are all equivalent, but it also says the "Markdown spec" is vague and implemented in different ways. Let's try some.
+
+* * *
+- - -
+*****
+-----------
+There were four different styles above.
