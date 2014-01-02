@@ -39,3 +39,6 @@ There are various ways to create a horizontal rule. *Wikipedia* says they are al
 -----------
 There were four different styles above.
 [Markdown]: http://en.wikipedia.com/wiki/Markdown "Markdown Wikipedia entry"
+
+Now I'll test inclusion of an image inline:
+![Image of wreath lamp walk](https://github.com/bobgru/nonsense/blob/master/tour15.jpg  "Wreath lamp walk")
