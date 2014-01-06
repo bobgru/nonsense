@@ -3,6 +3,10 @@ Bear with me while I get comfortable with this
 ## Second-level header
 ### Third-level header
 
+I added this line while my clone had outstanding uncommitted changes.
+I will have to merge this in order to commit.
+
+
 Another Main Heading
 ====================
 
