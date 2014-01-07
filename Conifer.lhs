@@ -141,7 +141,7 @@ and the ratio of partial growth at its tip. If the whorl is the first of the yea
 then its age is one year less, and its partial growth is 1.0. 
 
 >           numWhorls             = tpWhorlsPerYear tp
->           tipGrowth             = (tpBranchBranchLengthRatio tp) ^ age
+>           tipGrowth             = tpBranchBranchLengthRatio tp ^ age
 >           whorlHeight a         = trunkGrowth * (1 - a)
 >           branchPartialGrowth a = tipGrowth   * a
 >           partialAge i          = fromIntegral i / fromIntegral numWhorls
@@ -203,7 +203,7 @@ to apply at their tips.
 >           partialGrowth       = s * tblr
 >           fullGrowth          = tblr
 >           height i            = initialBranchGrowth * cos (tbas !! j)
->               where j    = i `mod` (length tbas)
+>               where j    = i `mod` length tbas
 >                     tbas = tpTrunkBranchAngles tp
 
 A branch shoots forward a certain length, then ends or splits into three branches,
@@ -253,53 +253,50 @@ Determine if next year has partial growth.
 Convert the tree of relative coordinate spaces into a single coherent absolute
 coordinate space, which will make projection onto the _x_-_z_ plane trivial.
 
+> toAbsoluteP3 :: P3 -> P3 -> P3
+> toAbsoluteP3 n p = n .+^ (p .-. origin)
+
 > toAbsoluteTree :: P3 -> Tree3 -> Tree3
 > toAbsoluteTree n (Tree3 p a g mt ws) =
 >     case mt of
 >         Nothing -> Tree3 p' a g Nothing ws'
 >         Just t  -> Tree3 p' a g (Just (toAbsoluteTree p' t)) ws'
->     where p'  = n .+^ (p .-. origin)
+>     where p'  = toAbsoluteP3 n p
 >           ws' = map (toAbsoluteWhorl n) ws
 
 > toAbsoluteWhorl :: P3 -> Whorl3 -> Whorl3
 > toAbsoluteWhorl n (Whorl3 p s bs) = Whorl3 p' s bs'
->     where p'  = n .+^ (p .-. origin)
+>     where p'  = toAbsoluteP3 n p
 >           bs' = map (toAbsoluteBranch p') bs
 
 > toAbsoluteBranch :: P3 -> Branch3 -> Branch3
 > toAbsoluteBranch n (Tip3 p a pa g) = Tip3 p' a pa g
->     where p'  = n .+^ (p .-. origin)
+>     where p'  = toAbsoluteP3 n p
 > toAbsoluteBranch n (Branch3 p a pa g bs) = Branch3 p' a pa g bs'
->     where p'  = n .+^ (p .-. origin)
+>     where p'  = toAbsoluteP3 n p
 >           bs' = map (toAbsoluteBranch p') bs
 
 **Projecting the Tree onto 2D**
 
 We are rendering the tree from the side, so we simply discard the _y_ coordinate.
 
+> xz :: P3 -> P2
+> xz p = p2 (x, z) where (x, _, z) = unp3 p
+
 > projectTreeXZ :: Tree3 -> Tree2
-> projectTreeXZ (Tree3 p a g mt ws) =
->     case mt of
->         Nothing -> Tree2 p' a g Nothing ws'
->         Just t  -> Tree2 p' a g (Just (projectTreeXZ t)) ws'
->     where p'        = p2 (x, z)
->           (x, _, z) = unp3 p
->           ws'       = map projectWhorlXZ ws
+> projectTreeXZ (Tree3 p a g mt ws) = case mt of
+>     Nothing -> Tree2 p' a g  Nothing                 ws'
+>     Just t  -> Tree2 p' a g (Just (projectTreeXZ t)) ws'
+>     where p'  = xz p
+>           ws' = map projectWhorlXZ ws
 
 > projectWhorlXZ :: Whorl3 -> Whorl2
-> projectWhorlXZ (Whorl3 p s bs) = Whorl2 p' s bs'
->     where p'        = p2 (x, z)
->           (x, _, z) = unp3 p
->           bs'       = map projectBranchXZ bs
+> projectWhorlXZ (Whorl3 p s bs) = Whorl2 (xz p) s (map projectBranchXZ bs)
 
 > projectBranchXZ :: Branch3 -> Branch2
-> projectBranchXZ (Tip3 p a pa g) = Tip2 p' a pa g
->     where p'        = p2 (x, z)
->           (x, _, z) = unp3 p
-> projectBranchXZ (Branch3 p a pa g bs) = Branch2 p' a pa g bs'
->     where p'        = p2 (x, z)
->           (x, _, z) = unp3 p
->           bs'       = map projectBranchXZ bs
+> projectBranchXZ b = case b of
+>     Tip3 p a pa g       -> Tip2    (xz p) a pa g
+>     Branch3 p a pa g bs -> Branch2 (xz p) a pa g (map projectBranchXZ bs)
 
 **Drawing the Tree from Absolute Coordinates**
 
@@ -311,7 +308,7 @@ We are rendering the tree from the side, so we simply discard the _y_ coordinate
 >     where 
 >           trunk      = drawTapered n p a g
 >           whorls     = mconcat (map drawWhorl ws)
->           nextTree t = drawTree p t
+>           nextTree   = drawTree p
 
 Draw a section of trunk (implicitly vertical) as a trapezoid with the
 correct girths at top and bottom.
@@ -347,8 +344,8 @@ trapezoid for a tapered trunk segment.
 > girth :: Int -> Double -> Double
 > girth a g = fromIntegral (a+1) * g * 0.01
 
-> withGirth :: Int -> Double -> (Diagram B R2 -> Diagram B R2)
-> withGirth a g = lw (girth a g)
+> withGirth :: Int -> Double -> Diagram B R2 -> Diagram B R2
+> withGirth a = lw . girth a
 
 **Rendering a Tree from Parameters**
 

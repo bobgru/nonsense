@@ -6,6 +6,7 @@ Bear with me while I get comfortable with this
 I added this line while my clone had outstanding uncommitted changes.
 I will have to merge this in order to commit.
 
+This line was added in the middle of reviewing a pull request.
 
 Another Main Heading
 ====================
