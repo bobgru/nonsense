@@ -253,24 +253,27 @@ Determine if next year has partial growth.
 Convert the tree of relative coordinate spaces into a single coherent absolute
 coordinate space, which will make projection onto the _x_-_z_ plane trivial.
 
+> toAbsoluteP3 :: P3 -> P3 -> P3
+> toAbsoluteP3 n p = n .+^ (p .-. origin)
+
 > toAbsoluteTree :: P3 -> Tree3 -> Tree3
 > toAbsoluteTree n (Tree3 p a g mt ws) =
 >     case mt of
 >         Nothing -> Tree3 p' a g Nothing ws'
 >         Just t  -> Tree3 p' a g (Just (toAbsoluteTree p' t)) ws'
->     where p'  = n .+^ (p .-. origin)
+>     where p'  = toAbsoluteP3 n p
 >           ws' = map (toAbsoluteWhorl n) ws
 
 > toAbsoluteWhorl :: P3 -> Whorl3 -> Whorl3
 > toAbsoluteWhorl n (Whorl3 p s bs) = Whorl3 p' s bs'
->     where p'  = n .+^ (p .-. origin)
+>     where p'  = toAbsoluteP3 n p
 >           bs' = map (toAbsoluteBranch p') bs
 
 > toAbsoluteBranch :: P3 -> Branch3 -> Branch3
 > toAbsoluteBranch n (Tip3 p a pa g) = Tip3 p' a pa g
->     where p'  = n .+^ (p .-. origin)
+>     where p'  = toAbsoluteP3 n p
 > toAbsoluteBranch n (Branch3 p a pa g bs) = Branch3 p' a pa g bs'
->     where p'  = n .+^ (p .-. origin)
+>     where p'  = toAbsoluteP3 n p
 >           bs' = map (toAbsoluteBranch p') bs
 
 **Projecting the Tree onto 2D**
