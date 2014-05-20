@@ -7,7 +7,7 @@ This tiny Haskell program makes use of quite a few language features, from the t
 * [Module declaration][module]
 * [Libraries from Hackage and the Haskell Platform][imports]
 * [Function definition, the function application operator `$`, and the `IO` monad][main]
-* [Point-free composition of higher-order functions, currying, and functors][renderTree]
+* [Point-free composition of higher-order functions, partial application, and functors][renderTree]
 * [Tuples][buildTree]
 * [Point-wise function definition, pattern matching and arrays][drawBranch]
 * [Guards][guards]
@@ -15,6 +15,10 @@ This tiny Haskell program makes use of quite a few language features, from the t
 * [Custom operators, in this case `.+^` from the diagrams library][operators]
 * [Nested functions and a post-application form of pipeline][nested]
 * Type inference—no link to code because it's the _lack_ of type declarations
+* Lazy evaluation, class instances, and currying—implicit in most Haskell code
+
+I would have liked to add _inifinite data structures_ to the list, but I'm not
+using any.
 
 Look at the unadorned [code][code].
 
