@@ -1,4 +1,4 @@
-##Step 0 -- Introduction##
+##Step 0—Introduction##
 
 See the README for setup instructions.
 
@@ -11,10 +11,10 @@ This tiny Haskell program makes use of quite a few language features, from the t
 * [Tuples][buildTree]
 * [Point-wise function definition, pattern matching and arrays][drawBranch]
 * [Guards][guards]
-* [The `where` clause and the use of the __prime__ or apostrophe in names][where]
+* [The `where` clause and the use of the _prime_ or apostrophe in names][where]
 * [Custom operators, in this case `.+^` from the diagrams library][operators]
 * [Nested functions and a post-application form of pipeline][nested]
-* Type inference--no link to code because it's the __lack__ of type declarations
+* Type inference—no link to code because it's the _lack_ of type declarations
 
 Look at the unadorned [code][code].
 
